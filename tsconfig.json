@@ -4,17 +4,27 @@
     "module": "esnext",
     "strict": true,
     "jsx": "preserve",
+    "baseUrl": ".",
+    "outDir": "./dist",
     "importHelpers": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "typeRoots": [
+      "./node_modules/@types/"
+    ],
     "types": [
       "webpack-env"
     ],
     "paths": {
+      "*": [
+        "node_modules/"
+      ],
       "@/*": [
         "src/*"
       ]
@@ -31,9 +41,12 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "./**/*"
   ],
   "exclude": [
+    "dist",
+    "**/*.spec.ts",
     "node_modules"
   ]
 }
