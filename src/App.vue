@@ -5,11 +5,7 @@
 <script lang="ts">
 import bootstrap from "bootstrap";
 import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "Home",
-  components: {},
-});
+export default defineComponent({});
 </script>
 
 <style lang="scss">
@@ -25,18 +21,6 @@ body {
   color: $snow;
   background: $dark-grey;
   @import "~bootstrap/scss/bootstrap";
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+  height: 100vh;
 }
 </style>

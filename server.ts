@@ -4,6 +4,7 @@ import {Server, Socket} from "socket.io";
 
 const app = express();
 const httpServer = createServer();
+const users: Array<string> = []
 const io = new Server(httpServer, {
   cors: {
     origin: "http://localhost:8080",
@@ -13,14 +14,33 @@ const io = new Server(httpServer, {
 app.get('/', (req, res) => {
   res.send({'some': 'json'});
 });
+
 io.on("connection", (socket: Socket) => {
-  console.log("a user connected");
+  let username = "";
+  socket.on("check user", (uniqid: string, user: string) => {
+    let res = false;
+    if (!users.includes(user)) {
+      res = true;
+      io.emit(uniqid, res);
+      users.push(user);
+      username = user;
+
+      io.emit("user connected", username);
+    }
+    else
+      io.emit(uniqid, res);
+  })
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    if (username != "") {
+      const index = users.indexOf(username);
+      if (index > -1) users.splice(index, 1)
+      io.emit('user disconnected', username)
+      console.log('user disconnected');
+    }
   });
   socket.on('chat message', (msg) => {
     console.log(msg)
-    io.emit('chat message', msg.user);
+    io.emit('new message', msg);
   });
 });
 

@@ -9,16 +9,12 @@
               type="text"
               placeholder="Username"
               name="username"
-              v-model="username"
+              v-model="user"
               id="username"
             />
           </div>
-          <div v-if="username">
-            <router-link :to="{ path: 'Chatroom' }">
-              <button type="submit" class="btn submit" @click="submitName">
-                Enter
-              </button>
-            </router-link>
+          <div v-if="user" @click="submitName">
+            <button type="submit" class="btn submit">Enter</button>
           </div>
         </div>
       </div>
@@ -28,21 +24,33 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from "vue";
-
+import { useRouter } from "vue-router";
+import { useStore } from "../store/store";
+import { io } from "socket.io-client";
+import router from "@/router";
 export default defineComponent({
   name: "Home",
   setup() {
+    const store = useStore();
+    const router = useRouter();
     const state = reactive({
-      username: "",
+      user: store.state.user,
+      socket: io("http://localhost:3000"),
+      check: false,
     });
 
     function submitName() {
-      if (state.username != "1") {
-        alert("not 1");
-      } else {
-        alert("1");
-      }
+      const uniqid = Date.now().toString();
+      state.socket.emit("check user", uniqid, state.user);
+      state.socket.on(uniqid, (res) => {
+        if (res) {
+          store.commit("setUser", state.user);
+          console.log(state.user);
+          router.push("/Chatroom");
+        } else alert("Name taken");
+      });
     }
+
     return { ...toRefs(state), submitName };
   },
   components: {},
